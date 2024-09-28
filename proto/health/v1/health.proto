@@ -1,0 +1,21 @@
+syntax = "proto3";
+option go_package = "health/v1";
+
+package health;
+
+// The Health service definition.
+service Health {
+  // Ping checks the health of the service.
+  rpc Ping(PingRequest) returns (PingResponse);
+}
+
+// The request message for the Ping method.
+message PingRequest {
+  string message = 1; // Optional message, can be used for custom checks
+}
+
+// The response message for the Ping method.
+message PingResponse {
+  bool success = 1; // Indicates if the service is healthy
+  string message = 2; // A message indicating health status
+}

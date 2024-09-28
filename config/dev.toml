@@ -1,0 +1,12 @@
+[app]
+    appEnv                = "default"
+    serviceName           = "Tiles-Invoice"
+    hostname              = "be.atc.com"
+    shutdownTimeout       = 2
+    shutdownDelay         = 2
+    gitCommitHash         = "nil"
+    [app.interfaces]
+        [app.interfaces.service]
+            GrpcServerAddress = "0.0.0.0:8080"
+            HttpServerAddress = "0.0.0.0:8081"
+            InternalServerAddress = "0.0.0.0:8082"
