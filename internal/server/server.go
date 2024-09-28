@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/config"
+	"github.com/MetsysEht/Tiles-Invoice-BE/pkg/logger"
 	"google.golang.org/grpc"
 	"net"
 )
@@ -15,14 +16,18 @@ type Server struct {
 }
 
 func NewServer(config config.NetworkInterfaces) *Server {
-	return &Server{}
+	grpcServer := NewGrpcServer()
+	return &Server{
+		config:     config,
+		grpcServer: grpcServer,
+	}
 }
 
 func (s *Server) Start() {
-
+	s.startGrpcServer()
 }
 
-func (s *Server) StartGrpcServer() {
+func (s *Server) startGrpcServer() {
 	listener, err := net.Listen("tcp", s.config.GrpcServerAddress)
 	if err != nil {
 		panic(err)
@@ -32,4 +37,12 @@ func (s *Server) StartGrpcServer() {
 	if err != nil {
 		panic(err)
 	}
+
+	logger.Sl.Infow("server started", "address", s.config.GrpcServerAddress)
+}
+
+func NewGrpcServer() *grpc.Server {
+	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(getInterceptors()...))
+	registerGRPCHandlers(grpcServer)
+	return grpcServer
 }

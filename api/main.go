@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/boot"
+	"github.com/MetsysEht/Tiles-Invoice-BE/internal/server"
 )
 
 func main() {
 	_, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	fmt.Println("Hello World")
 	boot.Initialize()
+	s := server.NewServer(boot.Config.App.Interfaces.Service)
+	s.Start()
 }

@@ -3,6 +3,7 @@ package boot
 import (
 	"fmt"
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/config"
+	"github.com/MetsysEht/Tiles-Invoice-BE/pkg/logger"
 )
 
 var (
@@ -15,5 +16,6 @@ func init() {
 }
 
 func Initialize() {
-	fmt.Println("Boot Initialize")
+	logger.InitLogger()
+	fmt.Println("Boot Initialized")
 }
