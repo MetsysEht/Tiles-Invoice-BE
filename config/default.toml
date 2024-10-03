@@ -10,3 +10,11 @@
             GrpcServerAddress = "0.0.0.0:8080"
             HttpServerAddress = "0.0.0.0:8081"
             InternalServerAddress = "0.0.0.0:8082"
+
+[db]
+    Username    ="root"
+    Password    ="1234"
+    Host        ="localhost"
+    Port        ="3306"
+    DBName      ="invoice"
+    Charset     ="utf8mb4"

@@ -1,9 +1,12 @@
 package config
 
+import "github.com/MetsysEht/Tiles-Invoice-BE/pkg/gormDatabase"
+
 // App contains application-specific config values
 
 type Config struct {
 	App App
+	DB  gormDatabase.Config
 }
 
 type App struct {
