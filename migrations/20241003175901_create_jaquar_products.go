@@ -12,11 +12,14 @@ func init() {
 }
 
 func upUsers(_ context.Context, tx *sql.Tx) error {
-	_, err := tx.Exec(`CREATE TABLE users (
+	_, err := tx.Exec(`CREATE TABLE jaquar_products (
     	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    	name VARCHAR(100) NOT NULL,
-    	email VARCHAR(100) NOT NULL UNIQUE,
-    	password VARCHAR(255) NOT NULL,
+    	series VARCHAR(5) NOT NULL,
+    	color_code VARCHAR(5) NOT NULL,
+    	code_number VARCHAR(15) NOT NULL,
+		description VARCHAR(100) NOT NULL,
+  		nrp BIGINT NOT NULL,
+		mrp BIGINT NOT NULL,
     	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 		);`)
@@ -27,7 +30,7 @@ func upUsers(_ context.Context, tx *sql.Tx) error {
 }
 
 func downUsers(_ context.Context, tx *sql.Tx) error {
-	_, err := tx.Exec("DROP TABLE users;")
+	_, err := tx.Exec("DROP TABLE jaquar_products;")
 	if err != nil {
 		return err
 	}
