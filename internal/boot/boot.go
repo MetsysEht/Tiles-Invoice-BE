@@ -2,8 +2,9 @@ package boot
 
 import (
 	"fmt"
+
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/config"
-	"github.com/MetsysEht/Tiles-Invoice-BE/pkg/gormDatabase"
+	"github.com/MetsysEht/Tiles-Invoice-BE/internal/database"
 	"github.com/MetsysEht/Tiles-Invoice-BE/pkg/logger"
 	"gorm.io/gorm"
 )
@@ -20,15 +21,11 @@ func init() {
 
 func Initialize() {
 	logger.InitLogger()
-	InitDatabase()
-
-	fmt.Println("Boot Initialized")
-}
-
-func InitDatabase() {
-	db, err := gormDatabase.CreateGormDatabase(&Config.DB)
+	db, err := database.GetDatabase(&Config.DB)
 	if err != nil {
-		logger.Sl.Fatal("Could not connect to DB")
+		panic(err.Error())
 	}
 	DB = db
+
+	fmt.Println("Boot Initialized")
 }

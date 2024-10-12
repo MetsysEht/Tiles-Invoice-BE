@@ -1,48 +1,34 @@
 package server
 
 import (
-	"github.com/MetsysEht/Tiles-Invoice-BE/internal/config"
+	"github.com/MetsysEht/Tiles-Invoice-BE/internal/boot"
+	"github.com/MetsysEht/Tiles-Invoice-BE/internal/users"
 	"github.com/MetsysEht/Tiles-Invoice-BE/pkg/logger"
-	"google.golang.org/grpc"
-	"net"
+	"github.com/gin-contrib/cors"
+	ginzap "github.com/gin-contrib/zap"
+	"github.com/gin-gonic/gin"
 )
 
-type Server struct {
-	config     config.NetworkInterfaces
-	grpcServer *grpc.Server
+var S *gin.Engine
 
-	//internalServer *http.Server
-	//httpServer     *http.Server
+func Initialize() {
+	gin.SetMode(gin.ReleaseMode)
+	S = gin.New()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost", "https://localhost"}
+	config.AllowCredentials = true
+	S.Use(cors.New(config))
+	S.Use(ginzap.RecoveryWithZap(logger.L.Desugar(), true))
+
+	registerRoutes()
 }
 
-func NewServer(config config.NetworkInterfaces) *Server {
-	grpcServer := NewGrpcServer()
-	return &Server{
-		config:     config,
-		grpcServer: grpcServer,
-	}
-}
+func registerRoutes() {
+	userRepo := users.NewRepo(boot.DB)
+	userManager := users.NewManager(userRepo)
+	userServer := users.CreateServer(userManager)
 
-func (s *Server) Start() {
-	s.startGrpcServer()
-}
-
-func (s *Server) startGrpcServer() {
-	listener, err := net.Listen("tcp", s.config.GrpcServerAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	err = s.grpcServer.Serve(listener)
-	if err != nil {
-		panic(err)
-	}
-
-	logger.Sl.Infow("server started", "address", s.config.GrpcServerAddress)
-}
-
-func NewGrpcServer() *grpc.Server {
-	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(getInterceptors()...))
-	registerGRPCHandlers(grpcServer)
-	return grpcServer
+	userRouter := S.Group("/users")
+	userRouter.POST("/create", userServer.Create)
+	userRouter.POST("/login", userServer.Login)
 }

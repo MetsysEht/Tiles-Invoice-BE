@@ -2,10 +2,11 @@ package gormDatabase
 
 import (
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"net/url"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // Config struct to hold the database configuration
@@ -35,4 +36,11 @@ func CreateGormDatabase(c *Config) (*gorm.DB, error) {
 	}
 
 	return db, nil
+}
+
+func GetDatabaseError(tx *gorm.DB) error {
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
 }
