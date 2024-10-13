@@ -3,6 +3,7 @@ package users
 import (
 	"time"
 
+	"github.com/MetsysEht/Tiles-Invoice-BE/internal/boot"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -42,7 +43,7 @@ func (m Manager) Login(req *LoginRequest) (*LoginResponse, error) {
 		"exp": time.Now().Add(24 * time.Hour).Unix(), // Expiration time
 		"iat": time.Now().Unix(),                     // Issued at
 	})
-	token, err := claims.SignedString([]byte(user.Id))
+	token, err := claims.SignedString([]byte(boot.Config.App.Key))
 	if err != nil {
 		return nil, err
 	}

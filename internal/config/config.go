@@ -17,6 +17,7 @@ type App struct {
 	ShutdownTimeout int
 	ShutdownDelay   int
 	GitCommitHash   string
+	Key             string
 	Interfaces      struct {
 		Service NetworkInterfaces
 	}
