@@ -7,15 +7,17 @@ import (
 type IServer interface {
 	Create(c *gin.Context)
 	Login(c *gin.Context)
+	GetAll(c *gin.Context)
 }
 
 type Imanager interface {
 	Create(*CreateRequest)
-	Login(request *LoginRequest) (*LoginResponse, error)
+	Login(*LoginRequest) (*LoginResponse, error)
+	GetAll() (*GetUserArray, error)
 }
 
 type IRepo interface {
 	Save(*User)
 	GetByUsername(string) (*User, error)
-	GetAll()
+	GetAll() (*[]User, error)
 }

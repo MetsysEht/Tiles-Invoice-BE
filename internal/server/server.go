@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/boot"
-	"github.com/MetsysEht/Tiles-Invoice-BE/internal/server/middleware"
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/users"
 	"github.com/MetsysEht/Tiles-Invoice-BE/pkg/logger"
 	"github.com/gin-contrib/cors"
@@ -16,10 +15,10 @@ func Initialize() {
 	gin.SetMode(gin.ReleaseMode)
 	S = gin.New()
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost", "https://localhost"}
+	config.AllowOrigins = []string{"http://localhost:5173", "https://localhost:5173"}
 	config.AllowCredentials = true
 	S.Use(cors.New(config))
-	S.Use(middleware.CheckAuthMiddleware)
+	//S.Use(middleware.CheckAuthMiddleware)
 	S.Use(ginzap.RecoveryWithZap(logger.L.Desugar(), true))
 
 	registerRoutes()
@@ -32,6 +31,7 @@ func registerRoutes() {
 
 	S.POST("users/login", userServer.Login)
 	userRouter := S.Group("/users")
-	userRouter.Use(middleware.AuthzMiddleware())
+	//userRouter.Use(middleware.AuthzMiddleware())
 	userRouter.POST("/create", userServer.Create)
+	userRouter.GET("/all", userServer.GetAll)
 }

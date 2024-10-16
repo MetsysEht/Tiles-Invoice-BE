@@ -49,5 +49,23 @@ func (m Manager) Login(req *LoginRequest) (*LoginResponse, error) {
 	}
 	return &LoginResponse{
 		JwtToken: token,
+		Role:     user.Role,
 	}, nil
+}
+
+func (m Manager) GetAll() (*GetUserArray, error) {
+	users, err := m.repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	userArray := GetUserArray{}
+	for _, u := range *users {
+		userArray = append(userArray, GetUser{
+			Id:        u.Id,
+			Username:  u.Username,
+			Role:      u.Role,
+			UpdatedAt: u.UpdatedAt,
+		})
+	}
+	return &userArray, nil
 }

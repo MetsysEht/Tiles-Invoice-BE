@@ -21,6 +21,7 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	JwtToken string
+	Role     string
 }
 
 type User struct {
@@ -31,6 +32,14 @@ type User struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+type GetUser struct {
+	Id        string
+	Username  string
+	Role      string
+	UpdatedAt time.Time
+}
+
+type GetUserArray []GetUser
 
 func (u *User) ToModel() *models.User {
 	if utils.IsEmpty(u.Id) {
@@ -54,4 +63,12 @@ func FromModel(u *models.User) *User {
 		UpdatedAt: u.UpdatedAt,
 	}
 	return user
+}
+
+func FromModelArray(uArray *[]models.User) *[]User {
+	userArray := make([]User, len(*uArray))
+	for u := range *uArray {
+		userArray[u] = *FromModel(&(*uArray)[u])
+	}
+	return &userArray
 }

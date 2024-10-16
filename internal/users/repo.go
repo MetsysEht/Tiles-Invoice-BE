@@ -24,9 +24,14 @@ func (r Repo) GetByUsername(username string) (*User, error) {
 	return FromModel(&user), nil
 }
 
-func (r Repo) GetAll() {
-	//TODO implement me
-	panic("implement me")
+func (r Repo) GetAll() (*[]User, error) {
+	var users []models.User
+	q := r.DB.Find(&users)
+	err := gormDatabase.GetDatabaseError(q)
+	if err != nil {
+		return nil, err
+	}
+	return FromModelArray(&users), nil
 }
 
 func (r Repo) Save(user *User) {

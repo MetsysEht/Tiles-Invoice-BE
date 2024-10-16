@@ -40,3 +40,13 @@ func (s Server) Login(c *gin.Context) {
 	c.JSON(200, resp)
 	return
 }
+
+func (s Server) GetAll(c *gin.Context) {
+	resp, err := s.manager.GetAll()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
