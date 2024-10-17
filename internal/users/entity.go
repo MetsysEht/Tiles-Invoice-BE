@@ -24,6 +24,10 @@ type LoginResponse struct {
 	Role     string
 }
 
+type DeleteRequest struct {
+	Username string `json:"username"`
+}
+
 type User struct {
 	Id        string
 	Username  string

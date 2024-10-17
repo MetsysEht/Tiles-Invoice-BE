@@ -14,10 +14,7 @@ var S *gin.Engine
 func Initialize() {
 	gin.SetMode(gin.ReleaseMode)
 	S = gin.New()
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:5173", "https://localhost:5173"}
-	config.AllowCredentials = true
-	S.Use(cors.New(config))
+	S.Use(cors.Default())
 	//S.Use(middleware.CheckAuthMiddleware)
 	S.Use(ginzap.RecoveryWithZap(logger.L.Desugar(), true))
 
@@ -32,6 +29,8 @@ func registerRoutes() {
 	S.POST("users/login", userServer.Login)
 	userRouter := S.Group("/users")
 	//userRouter.Use(middleware.AuthzMiddleware())
-	userRouter.POST("/create", userServer.Create)
-	userRouter.GET("/all", userServer.GetAll)
+	userRouter.POST("/", userServer.Create)
+	userRouter.GET("/", userServer.GetAll)
+	userRouter.PUT("/", userServer.Update)
+	userRouter.DELETE("/", userServer.Delete)
 }

@@ -2,7 +2,6 @@ package users
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,9 +18,14 @@ func (s Server) Create(c *gin.Context) {
 	req := CreateRequest{}
 	err := c.Bind(&req)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	s.manager.Create(&req)
+	err = s.manager.Create(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(200, gin.H{})
 }
 
@@ -29,6 +33,7 @@ func (s Server) Login(c *gin.Context) {
 	req := LoginRequest{}
 	err := c.Bind(&req)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	resp, err := s.manager.Login(&req)
@@ -36,7 +41,6 @@ func (s Server) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.SetCookie("jwt", resp.JwtToken, int(24*time.Second.Seconds()), "/", "localhost", true, true)
 	c.JSON(200, resp)
 	return
 }
@@ -44,9 +48,39 @@ func (s Server) Login(c *gin.Context) {
 func (s Server) GetAll(c *gin.Context) {
 	resp, err := s.manager.GetAll()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(200, resp)
 	return
+}
+
+func (s Server) Update(c *gin.Context) {
+	req := CreateRequest{}
+	err := c.Bind(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err = s.manager.Update(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{})
+}
+
+func (s Server) Delete(c *gin.Context) {
+	req := DeleteRequest{}
+	err := c.Bind(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err = s.manager.Delete(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{})
 }

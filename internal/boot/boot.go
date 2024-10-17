@@ -1,8 +1,6 @@
 package boot
 
 import (
-	"fmt"
-
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/config"
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/database"
 	"github.com/MetsysEht/Tiles-Invoice-BE/pkg/logger"
@@ -26,6 +24,4 @@ func Initialize() {
 		panic(err.Error())
 	}
 	DB = db
-
-	fmt.Println("Boot Initialized")
 }

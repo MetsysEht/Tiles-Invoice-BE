@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/MetsysEht/Tiles-Invoice-BE/internal/boot"
+	"github.com/MetsysEht/Tiles-Invoice-BE/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,15 +17,18 @@ func NewManager(repo IRepo) Imanager {
 	return Manager{repo: repo}
 }
 
-func (m Manager) Create(req *CreateRequest) {
+func (m Manager) Create(req *CreateRequest) error {
 	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	user := &User{
 		Username: req.Username,
 		Password: string(passwordHash),
 		Role:     req.Role,
 	}
-	m.repo.Save(user)
-	return
+	err := m.repo.Save(user)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (m Manager) Login(req *LoginRequest) (*LoginResponse, error) {
@@ -68,4 +72,29 @@ func (m Manager) GetAll() (*GetUserArray, error) {
 		})
 	}
 	return &userArray, nil
+}
+
+func (m Manager) Update(req *CreateRequest) error {
+	user := &User{
+		Username: req.Username,
+		Role:     req.Role,
+	}
+	var hashedPassword []byte
+	if !utils.IsEmpty(req.Password) {
+		hashedPassword, _ = bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+		user.Password = string(hashedPassword)
+	}
+	err := m.repo.Update(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m Manager) Delete(req *DeleteRequest) error {
+	err := m.repo.Delete(req.Username)
+	if err != nil {
+		return err
+	}
+	return nil
 }

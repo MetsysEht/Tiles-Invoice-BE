@@ -34,8 +34,31 @@ func (r Repo) GetAll() (*[]User, error) {
 	return FromModelArray(&users), nil
 }
 
-func (r Repo) Save(user *User) {
+func (r Repo) Save(user *User) error {
 	userModel := user.ToModel()
-	_ = r.DB.Save(userModel)
-	return
+	q := r.DB.Save(userModel)
+	err := gormDatabase.GetDatabaseError(q)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r Repo) Update(user *User) error {
+	userModel := user.ToModel()
+	q := r.DB.Model(userModel).Updates(userModel)
+	err := gormDatabase.GetDatabaseError(q)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r Repo) Delete(username string) error {
+	q := r.DB.Delete(models.User{}, "username = ?", username)
+	err := gormDatabase.GetDatabaseError(q)
+	if err != nil {
+		return err
+	}
+	return nil
 }
